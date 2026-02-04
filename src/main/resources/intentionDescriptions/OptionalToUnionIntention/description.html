@@ -1,0 +1,7 @@
+<html>
+<body>
+Replaces <code>Optional[X]</code> with <code>X | None</code> (PEP 604 union syntax).
+<p>Also handles <code>Optional[Union[X, Y]]</code> by flattening to <code>X | Y | None</code>.</p>
+<p>Removes the <code>Optional</code> import from <code>typing</code> if it is no longer used.</p>
+</body>
+</html>

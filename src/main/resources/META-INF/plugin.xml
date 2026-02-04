@@ -1,0 +1,28 @@
+<idea-plugin>
+    <id>com.github.btakita.python-intentions</id>
+    <name>Python Type Annotation Intentions</name>
+    <vendor>btakita</vendor>
+    <description><![CDATA[
+        Intention actions for converting between Python type annotation styles:
+        <ul>
+            <li><code>Optional[X]</code> → <code>X | None</code> (PEP 604 modern syntax)</li>
+            <li><code>X | None</code> → <code>Optional[X]</code> (classic typing syntax)</li>
+        </ul>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.python</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.OptionalToUnionIntention</className>
+            <category>Python/Type annotations</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.UnionToOptionalIntention</className>
+            <category>Python/Type annotations</category>
+        </intentionAction>
+    </extensions>
+</idea-plugin>
