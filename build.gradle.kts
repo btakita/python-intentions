@@ -29,5 +29,22 @@ tasks {
     patchPluginXml {
         sinceBuild.set("241")
         untilBuild.set(provider { null })
+        changeNotes.set("""
+            <ul>
+                <li>Initial release</li>
+                <li>Convert <code>Optional[X]</code> to <code>X | None</code> (PEP 604)</li>
+                <li>Convert <code>X | None</code> to <code>Optional[X]</code></li>
+            </ul>
+        """.trimIndent())
+    }
+
+    signPlugin {
+        certificateChain.set(providers.environmentVariable("CERTIFICATE_CHAIN"))
+        privateKey.set(providers.environmentVariable("PRIVATE_KEY"))
+        password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
+    }
+
+    publishPlugin {
+        token.set(providers.environmentVariable("PUBLISH_TOKEN"))
     }
 }

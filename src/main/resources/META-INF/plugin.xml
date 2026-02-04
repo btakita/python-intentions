@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.github.btakita.python-intentions</id>
     <name>Python Type Annotation Intentions</name>
-    <vendor>btakita</vendor>
+    <vendor url="https://github.com/btakita">btakita</vendor>
     <description><![CDATA[
         Intention actions for converting between Python type annotation styles:
         <ul>
