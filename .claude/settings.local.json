@@ -6,7 +6,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebSearch",
       "WebFetch(domain:plugins.jetbrains.com)",
-      "Bash(./gradlew buildPlugin:*)"
+      "Bash(./gradlew buildPlugin:*)",
+      "WebFetch(domain:plugins.gradle.org)"
     ]
   }
 }
