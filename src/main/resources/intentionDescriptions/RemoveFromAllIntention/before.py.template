@@ -1,0 +1,4 @@
+__all__ = ["bar", "foo"]
+
+def <spot>foo</spot>():
+    pass

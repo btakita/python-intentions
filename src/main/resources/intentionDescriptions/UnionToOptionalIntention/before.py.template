@@ -1,0 +1,2 @@
+def foo(x: <spot>int | None</spot>) -> None:
+    pass

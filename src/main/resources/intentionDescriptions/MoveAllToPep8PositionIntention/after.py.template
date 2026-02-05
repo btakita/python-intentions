@@ -1,0 +1,7 @@
+<spot>__all__ = ["foo", "bar"]</spot>
+
+import os
+import sys
+
+def foo():
+    pass
