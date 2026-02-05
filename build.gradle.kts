@@ -46,6 +46,7 @@ tasks {
         certificateChain.set(providers.environmentVariable("CERTIFICATE_CHAIN"))
         privateKey.set(providers.environmentVariable("PRIVATE_KEY"))
         password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
+        jvmArgs("--sun-misc-unsafe-memory-access=allow")
     }
 
     publishPlugin {
