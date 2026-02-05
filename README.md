@@ -17,3 +17,4 @@ To install the plugin, follow these steps:
 - `Optional[A]` ↔ `A | None` (PEP 604)
 - `Union[A, B, C]` ↔ `A | B | C` (PEP 604)
 - Add/Remove top-level names to/from `__all__`
+- Move `__all__` dunder to the PEP8 position
