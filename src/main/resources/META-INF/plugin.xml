@@ -1,8 +1,12 @@
 <idea-plugin>
     <id>com.github.btakita.python-intentions</id>
-    <name>Python Type Annotation Intentions</name>
+    <name>Python Intentions</name>
     <vendor url="https://github.com/btakita">btakita</vendor>
     <description><![CDATA[
+        Plugin that adds various intentions for the Python language.
+
+        More will be added in following releases. Currently supports:
+
         Intention actions for converting between Python type annotation styles:
         <ul>
             <li><code>Optional[X]</code> → <code>X | None</code> (PEP 604 modern syntax)</li>
