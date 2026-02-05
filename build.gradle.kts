@@ -25,6 +25,10 @@ kotlin {
     jvmToolchain(21)
 }
 
+intellijPlatform {
+    buildSearchableOptions = false
+}
+
 tasks {
     patchPluginXml {
         sinceBuild.set("241")
