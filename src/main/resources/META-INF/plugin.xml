@@ -9,8 +9,16 @@
 
         Intention actions for converting between Python type annotation styles:
         <ul>
-            <li><code>Optional[X]</code> → <code>X | None</code> (PEP 604 modern syntax)</li>
-            <li><code>X | None</code> → <code>Optional[X]</code> (classic typing syntax)</li>
+            <li><code>Optional[A]</code> → <code>A | None</code> (PEP 604 modern syntax)</li>
+            <li><code>A | None</code> → <code>Optional[A]</code> (classic typing syntax)</li>
+            <li><code>Union[A, B, C]</code> → <code>A | B | C</code></li>
+            <li><code>A | B | C</code> → <code>Union[A, B, C]</code></li>
+        </ul>
+
+        Intention actions for managing <code>__all__</code>:
+        <ul>
+            <li>Add top-level name to <code>__all__</code></li>
+            <li>Remove top-level name from <code>__all__</code></li>
         </ul>
     ]]></description>
 
@@ -27,6 +35,16 @@
             <language>Python</language>
             <className>com.github.btakita.pythonintentions.UnionToOptionalIntention</className>
             <category>Python/Type annotations</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.AddToAllIntention</className>
+            <category>Python/__all__</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.RemoveFromAllIntention</className>
+            <category>Python/__all__</category>
         </intentionAction>
     </extensions>
 </idea-plugin>
