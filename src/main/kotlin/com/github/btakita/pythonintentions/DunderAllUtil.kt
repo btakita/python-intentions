@@ -80,4 +80,42 @@ object DunderAllUtil {
         }
         return elements.any { it is PyStringLiteralExpression && it.stringValue == name }
     }
+
+    /**
+     * Computes the PEP 8 insertion index for `__all__` in the file's top-level statements.
+     * Skips the module docstring and `from __future__` imports.
+     */
+    fun findPep8InsertionIndex(file: PyFile): Int {
+        val statements = file.statements
+        var index = 0
+
+        // Skip docstring (first statement if it's an expression statement containing a string literal)
+        if (statements.isNotEmpty()) {
+            val first = statements[0]
+            if (first is PyExpressionStatement && first.expression is PyStringLiteralExpression) {
+                index = 1
+            }
+        }
+
+        // Skip from __future__ imports
+        while (index < statements.size) {
+            val stmt = statements[index]
+            if (stmt is PyFromImportStatement && stmt.importSourceQName?.toString() == "__future__") {
+                index++
+            } else {
+                break
+            }
+        }
+
+        return index
+    }
+
+    /**
+     * Returns true if the element is within a top-level `__all__` assignment.
+     */
+    fun isOnAllAssignment(element: PsiElement): Boolean {
+        val file = element.containingFile as? PyFile ?: return false
+        val allAssignment = findAllAssignment(file) ?: return false
+        return PsiTreeUtil.isAncestor(allAssignment, element, false)
+    }
 }

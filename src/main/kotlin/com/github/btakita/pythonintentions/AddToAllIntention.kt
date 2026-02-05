@@ -89,29 +89,10 @@ class AddToAllIntention : PsiElementBaseIntentionAction() {
         )
 
         val statements = file.statements
-        var insertionIndex = 0
-
-        // Skip docstring (first statement if it's an expression statement containing a string literal)
-        if (statements.isNotEmpty()) {
-            val first = statements[0]
-            if (first is PyExpressionStatement && first.expression is PyStringLiteralExpression) {
-                insertionIndex = 1
-            }
-        }
-
-        // Skip from __future__ imports
-        while (insertionIndex < statements.size) {
-            val stmt = statements[insertionIndex]
-            if (stmt is PyFromImportStatement && stmt.importSourceQName?.toString() == "__future__") {
-                insertionIndex++
-            } else {
-                break
-            }
-        }
+        val insertionIndex = DunderAllUtil.findPep8InsertionIndex(file)
 
         if (insertionIndex < statements.size) {
             val anchor = statements[insertionIndex]
-            // Add a newline before the __all__ assignment
             val newline = generator.createNewLine()
             file.addBefore(newline, anchor)
             file.addBefore(newStatement, anchor)
