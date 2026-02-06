@@ -30,49 +30,62 @@ class RemoveFromAllIntention : PsiElementBaseIntentionAction() {
         val allAssignment = DunderAllUtil.findAllAssignment(file) ?: return
         val value = allAssignment.assignedValue ?: return
 
-        val generator = PyElementGenerator.getInstance(element.project)
-        val langLevel = LanguageLevel.forElement(element)
-
-        when (value) {
-            is PyListLiteralExpression -> {
-                val remaining = value.elements.filter {
-                    !(it is PyStringLiteralExpression && it.stringValue == name)
-                }
-                val newAllText = if (remaining.isEmpty()) {
-                    "__all__ = []"
-                } else {
-                    "__all__ = [${remaining.joinToString(", ") { it.text }}]"
-                }
-                val newStatement = generator.createFromText(langLevel, PyAssignmentStatement::class.java, newAllText)
-                allAssignment.replace(newStatement)
+        val remaining = when (value) {
+            is PyListLiteralExpression -> value.elements.filter {
+                !(it is PyStringLiteralExpression && it.stringValue == name)
             }
-            is PyTupleExpression -> {
-                val remaining = value.elements.filter {
-                    !(it is PyStringLiteralExpression && it.stringValue == name)
-                }
-                val newAllText = if (remaining.isEmpty()) {
-                    "__all__ = ()"
-                } else {
-                    "__all__ = (${remaining.joinToString(", ") { it.text }})"
-                }
-                val newStatement = generator.createFromText(langLevel, PyAssignmentStatement::class.java, newAllText)
-                allAssignment.replace(newStatement)
+            is PyTupleExpression -> value.elements.filter {
+                !(it is PyStringLiteralExpression && it.stringValue == name)
             }
             is PyParenthesizedExpression -> {
                 val inner = value.containedExpression
                 if (inner is PyTupleExpression) {
-                    val remaining = inner.elements.filter {
+                    inner.elements.filter {
                         !(it is PyStringLiteralExpression && it.stringValue == name)
                     }
-                    val newAllText = if (remaining.isEmpty()) {
-                        "__all__ = ()"
-                    } else {
-                        "__all__ = (${remaining.joinToString(", ") { it.text }})"
-                    }
-                    val newStatement = generator.createFromText(langLevel, PyAssignmentStatement::class.java, newAllText)
-                    allAssignment.replace(newStatement)
-                }
+                } else return
             }
+            else -> return
         }
+
+        if (remaining.isEmpty()) {
+            deleteAssignmentAndSurroundingBlanks(allAssignment)
+        } else {
+            val generator = PyElementGenerator.getInstance(element.project)
+            val langLevel = LanguageLevel.forElement(element)
+            val bracket = if (value is PyTupleExpression || value is PyParenthesizedExpression) "()" else "[]"
+            val newAllText = "__all__ = ${bracket[0]}${remaining.joinToString(", ") { it.text }}${bracket[1]}"
+            val newStatement = generator.createFromText(langLevel, PyAssignmentStatement::class.java, newAllText)
+            allAssignment.replace(newStatement)
+        }
+    }
+
+    private fun deleteAssignmentAndSurroundingBlanks(assignment: PsiElement) {
+        val document = com.intellij.psi.PsiDocumentManager.getInstance(assignment.project)
+            .getDocument(assignment.containingFile) ?: return
+        val text = document.text
+        val startOffset = assignment.textRange.startOffset
+        val endOffset = assignment.textRange.endOffset
+        // Expand backwards to consume the preceding blank line(s)
+        var deleteStart = startOffset
+        while (deleteStart > 0 && text[deleteStart - 1] == '\n') {
+            deleteStart--
+        }
+        // But keep one newline if there's content before (to end the previous line)
+        if (deleteStart > 0) {
+            deleteStart++ // keep one \n
+        }
+        // Expand forward to consume the trailing newline
+        var deleteEnd = endOffset
+        while (deleteEnd < text.length && text[deleteEnd] == '\n') {
+            deleteEnd++
+        }
+        // But keep one newline if there's content after (to start the next line)
+        if (deleteEnd < text.length && deleteStart > 0) {
+            deleteEnd-- // keep one \n
+        }
+        document.deleteString(deleteStart, deleteEnd)
+        com.intellij.psi.PsiDocumentManager.getInstance(assignment.project)
+            .commitDocument(document)
     }
 }
