@@ -38,6 +38,16 @@
         </intentionAction>
         <intentionAction>
             <language>Python</language>
+            <className>com.github.btakita.pythonintentions.UnionSubscriptionToPipeIntention</className>
+            <category>Python/Type annotations</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.PipeToUnionSubscriptionIntention</className>
+            <category>Python/Type annotations</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
             <className>com.github.btakita.pythonintentions.AddToAllIntention</className>
             <category>Python/__all__</category>
         </intentionAction>

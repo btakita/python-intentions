@@ -8,7 +8,9 @@
       "WebFetch(domain:plugins.jetbrains.com)",
       "Bash(./gradlew buildPlugin:*)",
       "WebFetch(domain:plugins.gradle.org)",
-      "WebFetch(domain:docs.gradle.org)"
+      "WebFetch(domain:docs.gradle.org)",
+      "Bash(jar tf:*)",
+      "Bash(./gradlew test:*)"
     ]
   }
 }

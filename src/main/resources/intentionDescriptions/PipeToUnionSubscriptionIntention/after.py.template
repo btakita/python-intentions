@@ -1,0 +1,2 @@
+def foo(x: <spot>Union[int, str]</spot>) -> None:
+    pass

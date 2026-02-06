@@ -8,39 +8,27 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.python.psi.*
 
-class UnionToOptionalIntention : PsiElementBaseIntentionAction() {
+class PipeToUnionSubscriptionIntention : PsiElementBaseIntentionAction() {
 
-    override fun getFamilyName(): String = "Replace X | None with Optional[X]"
+    override fun getFamilyName(): String = "Replace X | Y with Union[X, Y]"
 
-    override fun getText(): String = "Replace with Optional[X]"
+    override fun getText(): String = "Replace with Union[X, Y]"
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
         val binaryExpr = findOutermostBinaryOr(element) ?: return false
         val operands = collectPipeOperands(binaryExpr)
-        return operands.any { isNone(it) } && operands.any { !isNone(it) }
+        return operands.size >= 2
     }
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
         val binaryExpr = findOutermostBinaryOr(element) ?: return
         val operands = collectPipeOperands(binaryExpr)
-        val nonNoneTypes = operands.filter { !isNone(it) }
-        if (nonNoneTypes.isEmpty()) return
+        if (operands.size < 2) return
+
+        val innerText = operands.joinToString(", ") { it.text }
+        val newText = "Union[$innerText]"
 
         val generator = PyElementGenerator.getInstance(project)
-        val langLevel = LanguageLevel.forElement(element)
-
-        val newText: String
-        val needsUnion: Boolean
-
-        if (nonNoneTypes.size == 1) {
-            newText = "Optional[${nonNoneTypes[0].text}]"
-            needsUnion = false
-        } else {
-            val innerText = nonNoneTypes.joinToString(", ") { it.text }
-            newText = "Optional[Union[$innerText]]"
-            needsUnion = true
-        }
-
         val injectionManager = InjectedLanguageManager.getInstance(project)
         if (injectionManager.isInjectedFragment(element.containingFile)) {
             val hostElement = injectionManager.getInjectionHost(element)
@@ -54,22 +42,17 @@ class UnionToOptionalIntention : PsiElementBaseIntentionAction() {
                 )
                 hostElement.replace(newStringExpr)
                 val file = hostElement.containingFile as? PyFile ?: return
-                addImportIfNeeded(file, "Optional", "typing")
-                if (needsUnion) {
-                    addImportIfNeeded(file, "Union", "typing")
-                }
+                addImportIfNeeded(file, "Union", "typing")
                 return
             }
         }
 
         val file = element.containingFile as? PyFile ?: return
-        val newExpr = generator.createExpressionFromText(langLevel, newText)
+        val newExpr = generator.createExpressionFromText(
+            LanguageLevel.forElement(element), newText
+        )
         binaryExpr.replace(newExpr)
-
-        addImportIfNeeded(file, "Optional", "typing")
-        if (needsUnion) {
-            addImportIfNeeded(file, "Union", "typing")
-        }
+        addImportIfNeeded(file, "Union", "typing")
     }
 
     private fun findOutermostBinaryOr(element: PsiElement): PyBinaryExpression? {
@@ -79,7 +62,6 @@ class UnionToOptionalIntention : PsiElementBaseIntentionAction() {
 
         if (!isBitwiseOr(candidate)) return null
 
-        // Walk up to outermost contiguous | expression
         while (true) {
             val parent = candidate.parent
             if (parent is PyBinaryExpression && isBitwiseOr(parent)) {
@@ -88,10 +70,6 @@ class UnionToOptionalIntention : PsiElementBaseIntentionAction() {
                 break
             }
         }
-
-        // Must contain None
-        val operands = collectPipeOperands(candidate)
-        if (!operands.any { isNone(it) }) return null
 
         return candidate
     }
@@ -107,12 +85,6 @@ class UnionToOptionalIntention : PsiElementBaseIntentionAction() {
             return collectPipeOperands(left) + collectPipeOperands(right)
         }
         return listOf(expr)
-    }
-
-    private fun isNone(expr: PyExpression): Boolean {
-        if (expr is PyNoneLiteralExpression) return true
-        if (expr is PyReferenceExpression && expr.name == "None") return true
-        return false
     }
 
     private fun addImportIfNeeded(file: PyFile, name: String, module: String) {

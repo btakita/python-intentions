@@ -1,3 +1,5 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
@@ -18,7 +20,10 @@ dependencies {
     intellijPlatform {
         pycharmCommunity(providers.gradleProperty("platformVersion").get())
         bundledPlugin("PythonCore")
+        bundledPlugin("org.toml.lang")
+        testFramework(TestFrameworkType.Platform)
     }
+    testImplementation("junit:junit:4.13.2")
 }
 
 java {
