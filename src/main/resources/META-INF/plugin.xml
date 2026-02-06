@@ -48,6 +48,16 @@
         </intentionAction>
         <intentionAction>
             <language>Python</language>
+            <className>com.github.btakita.pythonintentions.MakeTypeMaybeIntention</className>
+            <category>Python/Type annotations</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.MakeTypeNonMaybeIntention</className>
+            <category>Python/Type annotations</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
             <className>com.github.btakita.pythonintentions.AddToAllIntention</className>
             <category>Python/__all__</category>
         </intentionAction>
