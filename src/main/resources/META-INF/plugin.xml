@@ -75,5 +75,15 @@
             <className>com.github.btakita.pythonintentions.MoveDunderToPep8PositionIntention</className>
             <category>Python/Module dunders</category>
         </intentionAction>
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.CommentToDocstringIntention</className>
+            <category>Python/Comments</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Python</language>
+            <className>com.github.btakita.pythonintentions.DocstringToCommentIntention</className>
+            <category>Python/Comments</category>
+        </intentionAction>
     </extensions>
 </idea-plugin>
