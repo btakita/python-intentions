@@ -1,7 +1,7 @@
-<spot>__all__ = ["foo", "bar"]</spot>
-
 import os
 import sys
+
+<spot>__version__ = "1.0.0"</spot>
 
 def foo():
     pass

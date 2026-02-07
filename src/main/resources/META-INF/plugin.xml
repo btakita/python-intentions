@@ -19,7 +19,11 @@
         <ul>
             <li>Add top-level name to <code>__all__</code></li>
             <li>Remove top-level name from <code>__all__</code></li>
-            <li>Move <code>__all__</code> to PEP 8 position (after docstring and <code>__future__</code> imports, before other imports)</li>
+        </ul>
+
+        Intention actions for module-level dunder variables (<code>__all__</code>, <code>__version__</code>, <code>__author__</code>, etc.):
+        <ul>
+            <li>Move module dunder to PEP 8 position (after docstring and <code>__future__</code> imports, before other imports)</li>
         </ul>
     ]]></description>
 
@@ -68,8 +72,8 @@
         </intentionAction>
         <intentionAction>
             <language>Python</language>
-            <className>com.github.btakita.pythonintentions.MoveAllToPep8PositionIntention</className>
-            <category>Python/__all__</category>
+            <className>com.github.btakita.pythonintentions.MoveDunderToPep8PositionIntention</className>
+            <category>Python/Module dunders</category>
         </intentionAction>
     </extensions>
 </idea-plugin>
