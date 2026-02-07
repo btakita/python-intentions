@@ -49,6 +49,22 @@ class OptionalToUnionIntentionTest : BasePlatformTestCase() {
         )
     }
 
+    fun testOptionalWithoutImport() {
+        myFixture.configureByText(
+            PythonFileType.INSTANCE,
+            """
+            x: Opt<caret>ional[int] = None
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionText)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            x: int | None = None
+            """.trimIndent()
+        )
+    }
+
     fun testNotAvailableOnNonOptional() {
         myFixture.configureByText(
             PythonFileType.INSTANCE,

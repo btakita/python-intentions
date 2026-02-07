@@ -43,11 +43,7 @@ class MakeTypeMaybeIntention : PsiElementBaseIntentionAction() {
             val operand = expr.operand
             if (operand is PyReferenceExpression) {
                 if (operand.name == "Optional") {
-                    val resolved = operand.reference.resolve()
-                    val file = resolved?.containingFile
-                    if (file != null && (file.name == "typing.pyi" || isInTypingModule(file))) {
-                        return true
-                    }
+                    return true
                 }
                 if (operand.name == "Union") {
                     val indexExpr = expr.indexExpression
@@ -63,10 +59,5 @@ class MakeTypeMaybeIntention : PsiElementBaseIntentionAction() {
             return containsNone(left) || (right != null && containsNone(right))
         }
         return false
-    }
-
-    private fun isInTypingModule(file: com.intellij.psi.PsiFile): Boolean {
-        val path = file.virtualFile?.path ?: return false
-        return path.contains("/typing") || path.contains("\\typing")
     }
 }

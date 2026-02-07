@@ -66,15 +66,7 @@ class OptionalToUnionIntention : PsiElementBaseIntentionAction() {
     private fun isTypingOptional(expr: PySubscriptionExpression): Boolean {
         val operand = expr.operand
         if (operand !is PyReferenceExpression) return false
-        if (operand.name != "Optional") return false
-        val resolved = operand.reference.resolve() ?: return false
-        val file = resolved.containingFile ?: return false
-        return file.name == "typing.pyi" || isInTypingModule(file)
-    }
-
-    private fun isInTypingModule(file: com.intellij.psi.PsiFile): Boolean {
-        val path = file.virtualFile?.path ?: return false
-        return path.contains("/typing") || path.contains("\\typing")
+        return operand.name == "Optional"
     }
 
     private fun flattenInnerType(expr: PyExpression): List<String> {

@@ -104,6 +104,17 @@ class MakeTypeMaybeIntentionTest : BasePlatformTestCase() {
         assertEmpty(intentions)
     }
 
+    fun testNotAvailableOnOptionalWithoutImport() {
+        myFixture.configureByText(
+            PythonFileType.INSTANCE,
+            """
+            x: Opt<caret>ional[int] = None
+            """.trimIndent()
+        )
+        val intentions = myFixture.filterAvailableIntentions(intentionText)
+        assertEmpty(intentions)
+    }
+
     fun testNotAvailableOutsideAnnotation() {
         myFixture.configureByText(
             PythonFileType.INSTANCE,

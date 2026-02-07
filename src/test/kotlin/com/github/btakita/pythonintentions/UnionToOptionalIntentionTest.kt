@@ -44,6 +44,50 @@ class UnionToOptionalIntentionTest : BasePlatformTestCase() {
         )
     }
 
+    fun testImportAfterDocstring() {
+        myFixture.configureByText(
+            PythonFileType.INSTANCE,
+            """
+            ${"\"\"\""}Module docstring.${"\"\"\""}
+            x: int <caret>| None = None
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionText)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            ${"\"\"\""}Module docstring.${"\"\"\""}
+            from typing import Optional
+
+            x: Optional[int] = None
+            """.trimIndent()
+        )
+    }
+
+    fun testImportAfterDocstringAndDunders() {
+        myFixture.configureByText(
+            PythonFileType.INSTANCE,
+            """
+            ${"\"\"\""}Module docstring.${"\"\"\""}
+            __all__ = []
+            x: int <caret>| None = None
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionText)
+        myFixture.launchAction(intention)
+        // addBefore inserts a blank line between dunder and import
+        myFixture.checkResult(
+            """
+            ${"\"\"\""}Module docstring.${"\"\"\""}
+            __all__ = []
+
+            from typing import Optional
+
+            x: Optional[int] = None
+            """.trimIndent()
+        )
+    }
+
     fun testNotAvailableWithoutNone() {
         myFixture.configureByText(
             PythonFileType.INSTANCE,

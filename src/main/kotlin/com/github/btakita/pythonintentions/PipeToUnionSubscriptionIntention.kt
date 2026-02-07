@@ -99,7 +99,9 @@ class PipeToUnionSubscriptionIntention : PsiElementBaseIntentionAction() {
             val importStatement = generator.createFromImportStatement(
                 LanguageLevel.forElement(file), module, name, null
             )
-            file.addBefore(importStatement, file.statements.firstOrNull() ?: file.lastChild)
+            val pep8Index = DunderAllUtil.findPep8InsertionIndex(file)
+            val anchor = file.statements.getOrNull(pep8Index) ?: file.lastChild
+            file.addBefore(importStatement, anchor)
         }
     }
 }
