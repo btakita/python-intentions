@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin package="com.github.btakita.pythonintentions">
     <id>com.github.btakita.python-intentions</id>
     <name>Python Intentions</name>
     <vendor url="https://github.com/btakita">btakita</vendor>
