@@ -39,6 +39,19 @@ kotlin {
 
 intellijPlatform {
     buildSearchableOptions = false
+
+    pluginVerification {
+        ides {
+            // Verify against PyCharm Community (where PythonCore is bundled),
+            // not IntelliJ IDEA Ultimate (which lacks the Python plugin).
+            recommended()
+            select {
+                types = listOf(
+                    org.jetbrains.intellij.platform.gradle.IntelliJPlatformType.PyCharmCommunity
+                )
+            }
+        }
+    }
 }
 
 tasks {
