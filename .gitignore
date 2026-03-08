@@ -44,3 +44,4 @@ bin/
 .config
 .env
 .mise.toml
+.agent-doc/
